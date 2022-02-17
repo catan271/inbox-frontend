@@ -17,5 +17,5 @@ export default function Main() {
 const MainStyle = styled.div`
     flex: 1;
     display: flex;
-    overflow-y: clip;
+    overflow-y: hidden;
 `

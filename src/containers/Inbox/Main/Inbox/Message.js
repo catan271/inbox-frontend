@@ -1,10 +1,12 @@
 import React from 'react'
 import styled from 'styled-components'
 
-export function MyMessage({ color, content, first, last, avatar}) {
+export function MyMessage({ color, content, time, first, last, avatar}) {
     return (
         <MyMessageStyle theme={{color}}>
-            <div className={`content${first? ' first' : ''}${last? ' last' : ''}`}>{content}</div>
+            <div className="container" title={`${time.getHours()}:${('0' + time.getMinutes().toString()).slice(-2)} ${time.getDate()}/${time.getMonth() + 1}/${time.getFullYear()}`}>
+                <div className={`content${first? ' first' : ''}${last? ' last' : ''}`}>{content}</div>
+            </div>
             <div className="avatar">
                 {first && <img src={avatar} alt=""/>}
             </div>
@@ -19,11 +21,15 @@ const MyMessageStyle = styled.div`
     position: relative;
     align-self: flex-end;
 
+    .container {
+        overflow: clip;
+    }
+
     .content {
         min-height: 40px;
         border-radius: 20px 4px 4px 20px;
         background-color: ${props => props.theme.color};
-        padding: 8px 20px 8px 20px;
+        padding: 8px 12px 8px 12px;
         line-height: 24px;
         color: #fff;
         margin: 0 60px 0 20px;
@@ -38,16 +44,16 @@ const MyMessageStyle = styled.div`
         border-bottom-right-radius: 20px;
     }
 
-    .content.first:before {
+    .content.first::before {
         content: '';
         position: absolute;
         top: 0;
         left: 100%;
-        height: 20px;
-        width: 40px;
+        height: 40px;
+        width: 20px;
         border-top-left-radius: 20px;
         background: transparent;
-        box-shadow: -20px 0 0 0 ${props => props.theme.color};
+        box-shadow: 0 -20px 0 0 ${props => props.theme.color};
     }
 
     .avatar {
@@ -64,13 +70,15 @@ const MyMessageStyle = styled.div`
     }
 `
 
-export function OtherMessage({ color, content, first, last, avatar}) {
+export function OtherMessage({ color, content, time, first, last, avatar}) {
     return (
         <OtherMessageStyle theme={{color}}>
             <div className="avatar">
                 {first && <img src={avatar} alt=""/>}
             </div>
-            <div className={`content${first? ' first': ''}${last? ' last' : ''}`}>{content}</div>
+            <div className="container" title={`${time.getHours()}:${('0' + time.getMinutes().toString()).slice(-2)} ${time.getDate()}/${time.getMonth() + 1}/${time.getFullYear()}`}>
+                <div className={`content${first? ' first' : ''}${last? ' last' : ''}`}>{content}</div>
+            </div>
         </OtherMessageStyle>
     )
 }
@@ -83,12 +91,12 @@ const OtherMessageStyle = styled(MyMessageStyle)`
         border-radius: 4px 20px 20px 4px;
     }
 
-    .content.last {
-        border-bottom-left-radius: 20px;
-    }
-
     .content.first {
         border-radius: 0 20px 20px 8px;
+    }
+
+    .content.last {
+        border-bottom-left-radius: 20px;
     }
 
     .content.first::before {
@@ -96,7 +104,6 @@ const OtherMessageStyle = styled(MyMessageStyle)`
         left: unset;
         border-top-left-radius: 0;
         border-top-right-radius: 20px;
-        box-shadow: 20px 0 0 0 ${props => props.theme.color};
     }
 
     .avatar {

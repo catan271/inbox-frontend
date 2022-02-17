@@ -13,7 +13,7 @@ export default function App() {
         <Provider>
             <BrowserRouter>
                 <Routes>
-                    <Route exact={true} path='/'
+                    <Route path='/'
                         element={window.localStorage.getItem(localStorageKey.TOKEN) ? <Navigate to="/inbox"/> : <Navigate to='/login'/>}
                     />
                     <Route path='/login' element={<Login/>}/>

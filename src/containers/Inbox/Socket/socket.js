@@ -8,11 +8,13 @@ import { data } from '../Main/Main'
 const socket = io(socketEndpoint, {transports: ['websocket']})
 
 socket.on('newMessage', ({ content, from }) => {
+    const time = new Date()
     if (data[from._id]) {
         data[from._id].messages = [
             {
                 from: from._id,
                 content,
+                time
             },
             ...data[from._id].messages
         ]
@@ -23,7 +25,8 @@ socket.on('newMessage', ({ content, from }) => {
         chat: {
             last: {
                 from: from._id,
-                content
+                content,
+                time
             },
             seen: false
         }

@@ -75,6 +75,8 @@ const PickerStyle = styled.div`
         height: 320px;
         width: 100%;
         padding: 0 10px;
+        overflow-x: hidden;
+        overflow-y: auto;
         overflow-y: overlay;
         align-content: flex-start;
 

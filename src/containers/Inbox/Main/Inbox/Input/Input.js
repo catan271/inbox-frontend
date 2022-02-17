@@ -12,10 +12,7 @@ export default function Input({ user, other, send }) {
         const listener = e => {
             if (e.code === 'Enter') {
                 e.preventDefault()
-                const content = input.current.innerText.trim()
-                if (!content) return
-                send(content)                
-                input.current.innerText = ''
+                sendMessage()
             }
         }
         inputEle.addEventListener('keypress', listener)
@@ -24,6 +21,13 @@ export default function Input({ user, other, send }) {
         }
         // eslint-disable-next-line
     }, [other])
+
+    const sendMessage = () => {
+        const content = input.current.innerText.trim()
+        if (!content) return
+        send(content)                
+        input.current.innerText = ''
+    }
 
     const handleEmojiClick = (emoji) => {
         input.current.append(emoji)
@@ -42,6 +46,7 @@ export default function Input({ user, other, send }) {
                 />}
             </div>
             <div ref={input} className="input" contentEditable={true}></div>
+            <div className="send-button" onClick={sendMessage}><i className="fas fa-paper-plane"></i></div>
         </InputStyle>
     )
 }
@@ -55,6 +60,7 @@ const InputStyle = styled.div`
     background-color: #fff;
     box-shadow: 1px 1px 2px 0 rgba(0, 0, 0, 0.5);
 
+    .send-button,
     .emoji-picker {
         height: 40px;
         width: 40px;

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
 import styled from 'styled-components'
 import UserService from '../../../apis/UserService'
@@ -15,14 +15,15 @@ import Search from './utils/Search'
 export default function Header() {
     const user = useContext(UserContext)
     const navigate = useNavigate()
+    const [mobileSearch, setMobileSearch] = useState(false)
 
     useEffect(() => {
         
-    const token = window.localStorage.getItem(localStorageKey.TOKEN)
+        const token = window.localStorage.getItem(localStorageKey.TOKEN)
 
-    socket.emit('join', token, (e) => {
-        console.log(e)
-    })
+        socket.emit('join', token, (e) => {
+            console.log(e)
+        })
         if (!user._id) {
             UserService.getProfile()
                 .then((res) => {
@@ -41,19 +42,21 @@ export default function Header() {
 
     return (
         user._id? <HeaderStyle theme={{main: theme[user.color].main, secondary: theme[user.color].secondary}}>
-            <div className="left">
+            {!mobileSearch && <div className="left">
                 <h1 className="app-name">INBOX</h1>
-            </div>
+            </div>}
             <div className="right">
-                <Search/>
-                <div className="info">
-                    <div className="avatar"><img src={user.gender % 2? theme[user.color].female : theme[user.color].male} alt=""/></div>
-                    <div className="name">{user.name}</div>
-                </div>
-                <Notification/>
-                <Option/>
+                <Search mobileSearch={mobileSearch} setMobileSearch={setMobileSearch}/>
+                {!mobileSearch && <>
+                    <div className="info">
+                        <div className="avatar"><img src={user.gender % 2? theme[user.color].female : theme[user.color].male} alt=""/></div>
+                        <div className="name mobile-425-hidden">{user.name}</div>
+                    </div>
+                    <Notification/>
+                    <Option/>
+                </>}
             </div>
-        </HeaderStyle> : <></>
+        </HeaderStyle> : <HeaderStyle></HeaderStyle>
     )
 }
 
@@ -81,7 +84,8 @@ const HeaderStyle = styled.div`
         padding: 6px 12px;
         gap: 6px;
         justify-content: flex-end;
-        width: fit-content !important;
+        /* width: fit-content !important; */
+        flex: 1;
 
         .info {
             display: flex;
@@ -103,6 +107,7 @@ const HeaderStyle = styled.div`
             .name {
                 padding: 0 12px;
                 color: #fff;
+                white-space: nowrap;
             }
         }
     }

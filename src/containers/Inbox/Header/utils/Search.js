@@ -1,16 +1,21 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import styled from 'styled-components'
 import { useNavigate } from 'react-router-dom'
 
 import UserService from '../../../../apis/UserService'
 import { theme } from '../../../../constants/Theme'
 
-export default function Search() {
+export default function Search({ mobileSearch, setMobileSearch }) {
     // eslint-disable-next-line
     const [loading, setLoading] = useState(false)
     const [results, setResults] = useState()
     const timeout = useRef()
     const navigate = useNavigate()
+    const input = useRef()
+
+    useEffect(() => {
+        if (mobileSearch) input.current.focus()
+    })
 
     const doSearch = (search) => {
         setLoading(true)
@@ -61,10 +66,15 @@ export default function Search() {
         )
     }
 
+    const triggerMobileSearch = () => {
+        setMobileSearch(state => !state)
+    }
+
     return (        
-        <SearchStyle onSubmit={handleSubmit} autoComplete="off" onBlur={() => setResults(undefined)}>
-            <input name="search" onInput={handleInput} type="text" placeholder="Nhập liên hệ muốn tìm"></input>
-            <button type="submit" className="icon">{loading? <i className="fas fa-spin-1s fa-compass"></i> : <i className="fas fa-search"></i>}</button>
+        <SearchStyle onSubmit={handleSubmit} theme={{ mobileSearch }} autoComplete="off" onBlur={() => {setResults(undefined); triggerMobileSearch()}}>
+            <input ref={input} className={mobileSearch? '' : 'mobile-hidden'} name="search" onInput={handleInput} type="text" placeholder="Nhập liên hệ muốn tìm"></input>
+            <button type="submit" className={`icon ${mobileSearch? '' : 'mobile-hidden'}`}>{loading? <i className="fas fa-spin-1s fa-compass"></i> : <i className="fas fa-search"></i>}</button>
+            {!mobileSearch && <button className="icon mobile" onClick={triggerMobileSearch}><i className="fas fa-search"></i></button>}
             {results && <div className="results">{renderResult()}</div>}
         </SearchStyle>
     )
@@ -73,13 +83,21 @@ export default function Search() {
 const SearchStyle = styled.form`
     display: flex;
     align-items: center;
-    width: 320px;
     background: #F0F2F5;
     border-radius: 32px;
     padding: 0 12px;
-    position: relative;
+    position: relative;    
+
+    @media screen and (max-width: 768px){
+        width: ${props => props.theme.mobileSearch? '100%' : 'unset'};
+
+        input {
+            flex: 1;
+        }
+    }
 
     input {
+        width: 300px;
         flex: 1;
         outline: none;
         border: 0;

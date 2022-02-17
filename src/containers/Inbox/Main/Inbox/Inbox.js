@@ -10,6 +10,7 @@ import { pushChat } from '../Contacts/ContactList'
 import { data } from '../Main'
 import Input from './Input/Input'
 import { MyMessage, OtherMessage } from './Message'
+import TimeSeparator from './TimeSeparator'
 
 export let pushMessage
 
@@ -30,7 +31,10 @@ export default function Inbox() {
                 .then((res) => {
                     data[id] = {
                         other: res.data.other,
-                        messages: res.data.messages
+                        messages: res.data.messages.map(each => {
+                            each.time = new Date(each.time)
+                            return each
+                        })
                     }
                     other.current = res.data.other
                     setMessages(res.data.messages)
@@ -41,11 +45,17 @@ export default function Inbox() {
 
     const handleScroll = (e) => {
         const scrollBottom = (e.target.scrollTop - e.target.offsetHeight + e.target.scrollHeight)
-        if (!scrollBottom && !loading.current) {
+        if (scrollBottom < 10 && !loading.current) {
             loading.current = true
             ChatService.getChat(id, messages.length)
                 .then((res) => {
-                    setMessages(messages => [...messages, ...res.data.messages])
+                    setMessages(messages => [
+                        ...messages,
+                        ...res.data.messages.map(each => {
+                            each.time = new Date(each.time)
+                            return each
+                        })
+                    ])
                     if (res.data.messages.length) loading.current = false;
                 })
                 .catch(console.log)
@@ -57,20 +67,20 @@ export default function Inbox() {
     }
 
     const send = (content) => {
-        ChatService.send({
-            to: other.current._id,
-            content
-        })
         socket.emit('messageSent', {
             to: other.current._id,
             content
-        })
+        }, console.log)
+
+        const time = new Date()
+
         pushChat({
             other: other.current,
             chat: {
                 last: {
                     from: user._id,
-                    content
+                    content,
+                    time
                 },
                 seen: false
             }
@@ -78,7 +88,8 @@ export default function Inbox() {
         data[id].messages = [
             {
                 from: user._id,
-                content
+                content,
+                time
             },
             ...data[id].messages
         ]
@@ -91,6 +102,8 @@ export default function Inbox() {
         const myColor = theme[user.color].main
         const otherColor = theme[other.current.color].main
 
+        const now = new Date()
+
         return (
             <InboxStyle>
                 <div className="header">
@@ -100,28 +113,41 @@ export default function Inbox() {
                     <p className="name">{other.current.name}</p>
                 </div>
                 <div className="inbox" onScroll={handleScroll}>
-                    {messages.map((each, index) => each.from === user._id? 
-                        <MyMessage 
-                            first={index === messages.length - 1 || messages[index].from !== messages[index + 1].from} 
-                            last={index === 0 || messages[index].from !== messages[index - 1].from}
-                            avatar={myAvatar} 
-                            color={myColor} 
-                            content={each.content} 
-                            key={index}
-                        /> : 
-                        <OtherMessage 
-                            first={index === messages.length - 1 || messages[index].from !== messages[index + 1].from} 
-                            last={index === 0 || messages[index].from !== messages[index - 1].from}
-                            avatar={otherAvatar} 
-                            color={otherColor} 
-                            content={each.content} 
-                            key={index}
-                        />
-                    )}
+                    {messages.map((each, index) => {
+                        each.displayTime = index === messages.length - 1 || messages[index].time.getTime() - messages[index + 1].time.getTime() > 600000
+                        const first = index === messages.length - 1 || messages[index].from !== messages[index + 1].from || each.displayTime
+                        const last = index === 0 || messages[index].from !== messages[index - 1].from || messages[index - 1].displayTime
+
+                        return (
+                            <React.Fragment key={index}>
+                                {each.from === user._id? 
+                                <MyMessage 
+                                    first={first} 
+                                    last={last}
+                                    displayTime={each.displayTime}
+                                    time={each.time}
+                                    avatar={myAvatar} 
+                                    color={myColor} 
+                                    content={each.content} 
+                                /> : 
+                                <OtherMessage 
+                                    first={first} 
+                                    last={last}
+                                    displayTime={each.displayTime}
+                                    time={each.time}
+                                    avatar={otherAvatar} 
+                                    color={otherColor} 
+                                    content={each.content} 
+                                    key={index}
+                                />}
+                                {each.displayTime && <TimeSeparator time={each.time} color={theme[user.color].secondary} now={now}/>}
+                            </React.Fragment>
+                        )
+                    })}
                 </div>
                 <Input user={user} other={other.current} send={send}/>
             </InboxStyle>
-    )} else return <div style={{background: '#F6F6FC', flex: 1}}></div>
+    )} else return <div className="mobile-hidden" style={{background: 'aliceblue', flex: 1}}></div>
 }
 
 const InboxStyle = styled.div`
@@ -131,6 +157,7 @@ const InboxStyle = styled.div`
     display: flex;
     flex-direction: column;
     height: 100%;
+    font-size: 15px;
 
     .header {
         height: 56px;

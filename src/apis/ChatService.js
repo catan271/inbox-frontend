@@ -7,8 +7,8 @@ class ChatService extends BaseService {
         })
     }
 
-    getAllChat = () => {
-        return this.get('all')
+    getAllChat = (skip) => {
+        return this.get('all', {params: { skip }})
     }
 
     getChat = (id, skip) => {
