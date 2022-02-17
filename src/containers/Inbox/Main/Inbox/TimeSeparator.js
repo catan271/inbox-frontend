@@ -25,6 +25,7 @@ const TimeStyle = styled.div`
     display: flex;
     align-items: center;
     align-self: center;
+    color: #fff;
 
     .line {
         flex: 1;

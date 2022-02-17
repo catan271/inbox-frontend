@@ -6,7 +6,7 @@ import AuthService from '../../../../apis/AuthService'
 import localStorageKey from '../../../../constants/LocalStorageKeys'
 import { data } from '../../Main/Main'
 
-export default function Option() {
+export default function Option({ mobileSearch }) {
     const [open, setOpen] = useState(false)
     const navigate = useNavigate()
 
@@ -27,10 +27,10 @@ export default function Option() {
 
     return (
         <>
-            <UtilStyle theme={{open}} onClick={handleClick}>
+            <UtilStyle className={mobileSearch? 'mobile-hidden' : ''} theme={{open}} onClick={handleClick}>
                 <i className="fas fa-caret-down"></i>
             </UtilStyle>
-            {open && <DropdownStyle>
+            {open && <DropdownStyle className={mobileSearch? 'mobile-hidden' : ''}>
                 <div className="option">
                     <i className="fas fa-cog"/>
                     <p>Cài đặt</p>

@@ -42,19 +42,17 @@ export default function Header() {
 
     return (
         user._id? <HeaderStyle theme={{main: theme[user.color].main, secondary: theme[user.color].secondary}}>
-            {!mobileSearch && <div className="left">
+            <div className={`left ${mobileSearch? 'mobile-hidden': ''}`}>
                 <h1 className="app-name">INBOX</h1>
-            </div>}
+            </div>
             <div className="right">
                 <Search mobileSearch={mobileSearch} setMobileSearch={setMobileSearch}/>
-                {!mobileSearch && <>
-                    <div className="info">
-                        <div className="avatar"><img src={user.gender % 2? theme[user.color].female : theme[user.color].male} alt=""/></div>
-                        <div className="name mobile-425-hidden">{user.name}</div>
-                    </div>
-                    <Notification/>
-                    <Option/>
-                </>}
+                <div className={`info ${mobileSearch? 'mobile-hidden': ''}`}>
+                    <div className="avatar"><img src={user.gender % 2? theme[user.color].female : theme[user.color].male} alt=""/></div>
+                    <div className="name mobile-425-hidden">{user.name}</div>
+                </div>
+                <Notification mobileSearch={mobileSearch}/>
+                <Option mobileSearch={mobileSearch}/>
             </div>
         </HeaderStyle> : <HeaderStyle></HeaderStyle>
     )

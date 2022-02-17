@@ -27,6 +27,7 @@ export default function Input({ user, other, send }) {
         if (!content) return
         send(content)                
         input.current.innerText = ''
+        input.current.focus()
     }
 
     const handleEmojiClick = (emoji) => {

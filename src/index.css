@@ -37,23 +37,23 @@ html, body, #root {
 }
 
 .mobile {
-  display: none;
+  display: none !important;
 }
 
 @media screen and (max-width: 768px) {
   .mobile {
-    display: initial;
+    display: initial !important;
   }
 }
 
 @media screen and (max-width: 768px) {
   .mobile-hidden {
-    display: none;
+    display: none !important;
   }
 }
 
 @media screen and (max-width: 425px) {
   .mobile-425-hidden {
-    display: none;
+    display: none !important;
   }
 }
