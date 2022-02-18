@@ -72,6 +72,7 @@ export default function Search({ mobileSearch, setMobileSearch }) {
 
     return (        
         <SearchStyle onSubmit={handleSubmit} theme={{ mobileSearch }} autoComplete="off" onBlur={() => {setResults(undefined); triggerMobileSearch()}}>
+            <button className={`icon mobile ${mobileSearch? '' : 'mobile-hidden'}`} style={{marginRight: 6}}><i className="fas fa-arrow-left"></i></button>
             <input ref={input} className={mobileSearch? '' : 'mobile-hidden'} name="search" onInput={handleInput} type="text" placeholder="Nhập liên hệ muốn tìm"></input>
             <button type="submit" className={`icon ${mobileSearch? '' : 'mobile-hidden'}`}>{loading? <i className="fas fa-spin-1s fa-compass"></i> : <i className="fas fa-search"></i>}</button>
             {!mobileSearch && <button className="icon mobile" onClick={triggerMobileSearch}><i className="fas fa-search"></i></button>}
@@ -86,7 +87,7 @@ const SearchStyle = styled.form`
     background: #F0F2F5;
     border-radius: 32px;
     padding: 0 12px;
-    position: relative;    
+    position: relative; 
 
     @media screen and (max-width: 768px){
         width: ${props => props.theme.mobileSearch? '100%' : 'unset'};
