@@ -9,15 +9,25 @@ export default function Input({ user, other, send }) {
 
     useEffect(() => {
         const inputEle = input.current
-        const listener = e => {
+        const listener = (e) => {
             if (e.code === 'Enter') {
                 e.preventDefault()
                 sendMessage()
             }
         }
+        const pasteListener = (e) => {
+            e.preventDefault()
+            const text = (e.originalEvent || e).clipboardData.getData('text/plain')
+            inputEle.append(text)
+        }
+
         inputEle.addEventListener('keypress', listener)
+        inputEle.addEventListener('paste', pasteListener)
+        inputEle.innerText = ''
+
         return () => {
             inputEle.removeEventListener('keypress', listener)
+            inputEle.removeEventListener('paste', pasteListener)
         }
         // eslint-disable-next-line
     }, [other])

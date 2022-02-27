@@ -215,7 +215,7 @@ const RegisterForm = styled(LoginForm)`
                 cursor: pointer;
             }
 
-            .option:hover{
+            .option:hover {
                 background-color: #2D6ED0;
                 color: white;
             }

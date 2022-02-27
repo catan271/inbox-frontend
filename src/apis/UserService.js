@@ -3,7 +3,7 @@ import BaseService from "./BaseService";
 class UserService extends BaseService {
     constructor() {
         super({
-            subURL: '/users'
+            subURL: '/user'
         })
     }
 
@@ -13,6 +13,10 @@ class UserService extends BaseService {
 
     find(search) {
         return this.get('find', {params: {search}})
+    }
+
+    update(body) {
+        return this.patch('update', body)
     }
 }
 

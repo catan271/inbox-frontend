@@ -3,7 +3,9 @@ import { useParams } from 'react-router'
 import styled from 'styled-components'
 
 import ChatService from '../../../../apis/ChatService'
+import InfoWindow from '../../../../components/info/InfoWindow'
 import { theme } from '../../../../constants/Theme'
+import { setDialog } from '../../../../store/Actions'
 import { UserContext } from '../../../../store/Provider'
 import socket from '../../Socket/socket'
 import { pushChat } from '../Contacts/ContactList'
@@ -96,6 +98,10 @@ export default function Inbox() {
         setMessages(data[id].messages)
     }
 
+    const pushInfoDialog = () => {
+        setDialog(<InfoWindow user={other.current}/>)
+    }
+
     if (id && messages && other.current && user._id) {
         const myAvatar = user.gender % 2? theme[user.color].female : theme[user.color].male
         const otherAvatar = other.current.gender % 2? theme[other.current.color].female : theme[other.current.color].male
@@ -111,6 +117,9 @@ export default function Inbox() {
                         <img src={otherAvatar} alt=""/>
                     </div>
                     <p className="name">{other.current.name}</p>
+                    <div className="info" style={{'--other-color': otherColor}} onClick={pushInfoDialog}>
+                        <i className="fas fa-info-circle"></i>
+                    </div>
                 </div>
                 <div className="inbox" onScroll={handleScroll}>
                     {messages.map((each, index) => {
@@ -160,7 +169,8 @@ const InboxStyle = styled.div`
     font-size: 15px;
 
     .header {
-        height: 56px;
+        --base-height: 56px;
+        height: var(--base-height);
         box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.25);
         background-color: #fff;
         display: flex;
@@ -169,7 +179,7 @@ const InboxStyle = styled.div`
 
         .avatar {
             height: 100%;
-            width: 56px;
+            width: var(--base-height);
             padding: 8px;
 
             img {
@@ -181,6 +191,21 @@ const InboxStyle = styled.div`
         .name {
             font-size: 16px;
             font-weight: 500;
+        }
+
+        .info {
+            margin-left: auto;
+            height: var(--base-height);
+            width: var(--base-height);
+            line-height: var(--base-height);
+            text-align: center;
+            color: var(--other-color);
+            font-size: 32px;
+            cursor: pointer;
+
+            .fa-info {
+                display: none;
+            }
         }
     }
 

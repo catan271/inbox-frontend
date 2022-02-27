@@ -2,7 +2,7 @@ import BaseService from "./BaseService";
 
 class AuthService extends BaseService{
     constructor() {
-        super({ subURL: '/users'})
+        super({ subURL: '/user'})
     }
 
     login = (body = {}) => {

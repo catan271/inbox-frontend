@@ -5,7 +5,7 @@ body {
   font-family: 'Segoe UI', Tahoma, Verdana, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-size: 16px;
+  font-size: 15px;
 }
 
 code {
@@ -21,6 +21,7 @@ html, body, #root {
   padding: 0;
   margin: 0;
   box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .fa-spin-1s {

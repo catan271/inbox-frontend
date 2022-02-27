@@ -3,7 +3,7 @@ import BaseService from "./BaseService";
 class ChatService extends BaseService {
     constructor() {
         super({
-            subURL: '/chats'
+            subURL: '/chat'
         })
     }
 
