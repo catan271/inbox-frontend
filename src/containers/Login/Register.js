@@ -28,6 +28,8 @@ export default function Register() {
         const username = e.target.username.value
         const password = e.target.password.value
         const repassword = e.target.repassword.value
+        const age = e.target.age.value
+
         const error = []
         if (!familyName) {
             error.push('Vui lòng nhập họ')
@@ -47,14 +49,19 @@ export default function Register() {
         if (repassword !== password) {
             error.push('Mật khẩu nhập lại không chính xác')
         }
+        if (!age) {
+            error.push('Vui lòng nhập tuổi')
+        }
         if (gender === 3) {
             error.push('Vui lòng chọn giới tính')
         }
+
+        console.log({ familyName, givenName, username, password, age, gender, color })
         if (error.length) {
             setWarnings(error)
             setLoading(false)
         } else {
-            AuthService.register({ familyName, givenName, username, password, gender, color })
+            AuthService.register({ familyName, givenName, username, password, age, gender, color })
                 .then((res) => {
                     console.log(res)
                     setLoading(false)
@@ -96,6 +103,10 @@ export default function Register() {
                 <div className="input">
                     <div className="prefix"><i className="fas fa-key"></i></div>
                     <input type="password" placeholder="Nhập lại mật khẩu" name="repassword"></input>
+                </div>
+                <div className="input">
+                    <div className="prefix"><i className="fas fa-birthday-cake"></i></div>
+                    <input type="number" placeholder="Tuổi" name="age"></input>
                 </div>
                 <div className="input">
                     <div className="prefix">
